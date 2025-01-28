@@ -14,6 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    Screen 1
+        A drop-down menu of 17 different gestures will be shown on this screen. Once a single gesture is
+    selected, the user will be taken to Screen 2.
+    ● Gesture list: {Turn on lights, Turn off lights, Turn on fan, Turn off fan, Increase fan speed,
+    decrease fan speed, Set Thermostat to specified temperature, gestures one for each digit
+    0,1,2,3,4,5,6,7,8,9}
+ */
 public class MainActivity extends AppCompatActivity {
     final String[] gestures = new String[] {
             "Select a gesture",
