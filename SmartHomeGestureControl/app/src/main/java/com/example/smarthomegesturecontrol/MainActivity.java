@@ -12,7 +12,10 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /*
     Screen 1
@@ -23,21 +26,18 @@ import java.util.Map;
     0,1,2,3,4,5,6,7,8,9}
  */
 public class MainActivity extends AppCompatActivity {
-    final String[] gestures = new String[] {
-            "Select a gesture",
-            "Turn on lights", "Turn off lights", "Turn on fan", "Turn off fan", "Increase fan speed",
-            "Decrease fan speed", "Set Thermostat to specified temperature",
-            "Gesture 1", "Gesture 2", "Gesture 3", "Gesture 4", "Gesture 5",
-            "Gesture 6", "Gesture 7", "Gesture 8", "Gesture 9"
-    };
+    protected class VideoName {
+        String practiceVideoName;
+        String saveVideoName;
 
-    final String[] gestureVideo = new String[] {
-            "light_on", "light_off", "fan_on", "fan_off", "increase_fan_speed",
-            "decrease_fan_speed", "set_thermo",
-            "h0", "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9"
-    };
+        public VideoName(String practiceVideoName, String saveVideoName) {
+            this.practiceVideoName = practiceVideoName;
+            this.saveVideoName = saveVideoName;
+        }
+    }
+    protected LinkedHashMap<String, VideoName> videoFile;
 
-    protected Map<String, String> gestureDictionary = InitializeGestureVideo();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +45,39 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        setVideoName();
         Spinner spinner = findViewById((R.id.GestureDropdown));
         setSpinner(spinner);
         onSpinnerItemSelect(spinner);
     };
 
+    private void setVideoName() {
+        videoFile = new LinkedHashMap<>();
+
+        videoFile.put("Select a gesture", new VideoName("", ""));
+        videoFile.put("Turn On Light", new VideoName("light_on", "LightOn"));
+        videoFile.put("Turn Off Light", new VideoName("light_off", "LightOff"));
+        videoFile.put("Turn On Fan", new VideoName("fan_on", "FanOn"));
+        videoFile.put("Turn Off Fan", new VideoName("fan_off", "FanOff"));
+        videoFile.put("Increase Fan Speed", new VideoName("increase_fan_speed", "FanUp"));
+        videoFile.put("Decrease Fan Speed", new VideoName("decrease_fan_speed", "FanDown"));
+        videoFile.put("Set Thermostat to specified temperature", new VideoName("set_thermo", "SetThermo"));
+        videoFile.put("0", new VideoName("h0", "Num0"));
+        videoFile.put("1", new VideoName("h1", "Num1"));
+        videoFile.put("2", new VideoName("h2", "Num2"));
+        videoFile.put("3", new VideoName("h2", "Num3"));
+        videoFile.put("4", new VideoName("h4", "Num4"));
+        videoFile.put("5", new VideoName("h5", "Num5"));
+        videoFile.put("6", new VideoName("h6", "Num6"));
+        videoFile.put("7", new VideoName("h7", "Num7"));
+        videoFile.put("8", new VideoName("h8", "Num8"));
+        videoFile.put("9", new VideoName("h9", "Num9"));
+    }
+
+    // Dropdown menu
     private void setSpinner(Spinner spinner) {
+        // Convert hashtable key to array to show in dropdown
+        String[] gestures = videoFile.keySet().toArray(new String[0]);
         // Convert string to views
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, gestures);
         adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
@@ -58,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
     }
 
+    // on Item selected on dropdown
     public void onSpinnerItemSelect(Spinner spinner) {
         // Set an OnItemSelectedListener to listen for item selection
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -71,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Go to next View
                 Intent intent = new Intent(MainActivity.this, PracticeActivity.class);
-                intent.putExtra("gesture", selectedItem);
-                intent.putExtra("videoName", gestureDictionary.get(selectedItem));
+                intent.putExtra("practiceVideoName", Objects.requireNonNull(videoFile.get(selectedItem)).practiceVideoName);
+                intent.putExtra("saveVideoName", Objects.requireNonNull(videoFile.get(selectedItem)).saveVideoName);
 
                 startActivity(intent);
 
@@ -85,20 +113,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private Map<String, String> InitializeGestureVideo() {
-        Map<String, String> dictionary = new HashMap<>();
-
-        for (int i = 0; i < gestures.length; i++)
-        {
-            // don't add "Select a Gesture
-            if ( i == 0 )
-                continue;
-            else
-                dictionary.put(gestures[i], gestureVideo[i - 1]);
-        }
-
-        return dictionary;
     }
 }
