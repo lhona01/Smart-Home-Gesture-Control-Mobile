@@ -20,17 +20,18 @@ import androidx.core.view.WindowInsetsCompat;
     3.
  */
 public class PracticeActivity extends AppCompatActivity {
-
+    protected String videoName;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_practice);
 
-        Intent intent = getIntent();
-        String videoName = intent.getStringExtra("videoName");
+        intent = getIntent();
+        videoName = intent.getStringExtra("practiceVideoName");
 
-        ((TextView)findViewById(R.id.textView)).setText(intent.getStringExtra("gesture") + " tutorial");
+        ((TextView)findViewById(R.id.textView)).setText(intent.getStringExtra("practiceVideoName") + " tutorial");
 
         VideoView videoView = findViewById(R.id.ExpertVideo);
         Uri uri = Uri.parse("android.resource://"+ getPackageName() + "/raw/" + videoName);
@@ -45,10 +46,9 @@ public class PracticeActivity extends AppCompatActivity {
     }
 
     public void setGestureActivity(View view) {
-        Intent intent = getIntent();
         Intent newIntent = new Intent(PracticeActivity.this, GestureActivity.class);
 
-        intent.putExtra("gestureName", intent.getStringExtra("gesture"));
+        newIntent.putExtra("saveVideoName", intent.getStringExtra("saveVideoName"));
         startActivity(newIntent);
     }
 }
